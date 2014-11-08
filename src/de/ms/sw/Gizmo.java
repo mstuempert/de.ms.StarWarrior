@@ -20,6 +20,10 @@ public abstract class Gizmo {
 		return getBoundingBox().intersects(g.getBoundingBox());
 	}
 	
+	public boolean isVisible() {
+		return new Rectangle(this.universe.getSize()).intersects(getBoundingBox());
+	}
+	
 	public void move(long millis) {
 		this.position.add(this.velocity.product((float)millis/1000f));
 	}

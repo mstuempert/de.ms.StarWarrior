@@ -18,13 +18,6 @@ public class Bullet extends Gizmo {
 		return this.enemy;
 	}
 	
-	public boolean isVisible() {
-		return this.position.x() > 0
-				&& this.position.y() > 0
-				&& this.position.x() < this.universe.getSize().width
-				&& this.position.y() < this.universe.getSize().height;
-	}
-
 	@Override
 	public void render(Graphics g) {
 		g.setColor(this.enemy ? Color.RED : Color.BLUE);
