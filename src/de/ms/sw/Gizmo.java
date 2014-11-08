@@ -14,6 +14,7 @@ public abstract class Gizmo {
 	public Gizmo(Universe universe, Vector2D position) {
 		this.universe = universe;
 		this.position = position;
+		this.velocity = new Vector2D(0, 0);
 	}
 	
 	public boolean didCollide(Gizmo g) {

@@ -1,6 +1,5 @@
 package de.ms.sw;
 
-import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsDevice;
@@ -8,6 +7,8 @@ import java.awt.GraphicsEnvironment;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferStrategy;
+
+import javax.swing.JFrame;
 
 public class StarWarrior {
 	
@@ -21,9 +22,10 @@ public class StarWarrior {
 		GraphicsDevice device = environment.getDefaultScreenDevice();
 		GraphicsConfiguration configuration = device.getDefaultConfiguration();
 		
-		Frame frame = new Frame(configuration);
+		JFrame frame = new JFrame(configuration);
 		frame.setUndecorated(true);
 		frame.setIgnoreRepaint(true);
+		frame.setAlwaysOnTop(true);
 		frame.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
@@ -75,7 +77,7 @@ public class StarWarrior {
 			}
 			
 		} catch (Exception e) {
-			System.err.println(e);
+			e.printStackTrace();
 		} finally {
 			if (universe != null) {
 				universe.destroy();

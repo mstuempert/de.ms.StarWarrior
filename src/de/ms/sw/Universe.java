@@ -89,7 +89,7 @@ public class Universe {
 				Bullet b = bullets.get(i);
 				b.move(millisSinceLastStep);
 				if (!b.isVisible()) {
-					this.bullets.remove(i);
+					this.bullets.remove(i--);
 				}
 			}
 		}
@@ -99,7 +99,18 @@ public class Universe {
 				Enemy e = enemies.get(i);
 				e.move(millisSinceLastStep);
 				if (!e.isVisible()) {
-					this.enemies.remove(i);
+					this.enemies.remove(i--);
+				}
+			}
+		}
+		
+		synchronized (this.explosions) {
+			for (int i = 0 ; i < this.explosions.size() ; i++) {
+				Explosion e = explosions.get(i);
+				if (e.isVisible()) {
+					e.move(millisSinceLastStep);
+				} else {
+					this.explosions.remove(i--);
 				}
 			}
 		}
@@ -140,7 +151,10 @@ public class Universe {
 	}
 
 	private void addExplosion(Vector2D position) {
-		
+		Explosion explosion = new Explosion(this, position);
+		synchronized (this.explosions) {
+			this.explosions.add(explosion);
+		}
 	}
 
 	private void createNewEnemy() {
@@ -167,6 +181,12 @@ public class Universe {
 		synchronized (this.enemies) {
 			for (Enemy enemy : this.enemies) {
 				enemy.render(g);
+			}
+		}
+		
+		synchronized (this.explosions) {
+			for (Explosion e : this.explosions) {
+				e.render(g);
 			}
 		}
 		
