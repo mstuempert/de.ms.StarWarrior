@@ -2,6 +2,7 @@ package de.ms.sw;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Graphics;
 import java.util.ArrayList;
@@ -11,9 +12,13 @@ import java.util.Random;
 
 public class Universe {
 	
+	private static final float STARFIELD_DENSITY = 1f;
+	
 	private Frame frame;
 	
 	private Spaceship spaceship;
+	
+	private List<Star> stars = Collections.synchronizedList(new ArrayList<Star>());
 	
 	private List<Bullet> bullets = Collections.synchronizedList(new ArrayList<Bullet>());
 
@@ -30,6 +35,8 @@ public class Universe {
 	private Random random;
 	
 	private long gameOverTimeMillis = -1;
+	
+	private int score = 0;
 	
 	public Universe(Frame frame) {
 		
@@ -76,10 +83,25 @@ public class Universe {
 		long millisSinceLastStep = currentTimeMillis - this.lastStepMillis;
 		this.lastStepMillis = currentTimeMillis;
 		
-		float newEnemyProbability = this.levelController.getEnemiesPerSecond()*millisSinceLastStep/1000f;
 		float nextFloat = this.random.nextFloat();
+		if (nextFloat < STARFIELD_DENSITY) {
+			createNewStar();
+		}
+		
+		float newEnemyProbability = this.levelController.getEnemiesPerSecond()*millisSinceLastStep/1000f;
+		nextFloat = this.random.nextFloat();
 		if (nextFloat < newEnemyProbability) {
 			createNewEnemy();
+		}
+		
+		synchronized (this.stars) {
+			for (int i = 0 ; i < this.stars.size() ; i++) {
+				Star s = stars.get(i);
+				s.move(millisSinceLastStep);
+				if (!s.isVisible()) {
+					this.stars.remove(i--);
+				}
+			}
 		}
 		
 		this.spaceship.move(millisSinceLastStep);
@@ -128,6 +150,7 @@ public class Universe {
 						for (int j = 0 ; j < this.enemies.size() ; j++) {
 							if (bullet.didCollide(this.enemies.get(j))) {
 								addExplosion(this.enemies.get(j).position);
+								this.score += this.enemies.get(j).getScore();
 								this.bullets.remove(i);
 								this.enemies.remove(j);
 								continue;
@@ -165,12 +188,25 @@ public class Universe {
 		}
 	}
 
+	private void createNewStar() {
+		Star star = new Star(this, new Vector2D(random.nextInt(frame.getWidth()), 1), random.nextFloat());
+		synchronized (this.stars) {
+			this.stars.add(star);
+		}
+	}
+
 	public void render(Graphics g) {
 		
 		Dimension size = frame.getSize();
 		
 		g.setColor(this.gameOverTimeMillis <= 0 ? Color.BLACK : Color.RED);
 		g.fillRect(0, 0, size.width, size.height);
+		
+		synchronized (this.stars) {
+			for (Star star : this.stars) {
+				star.render(g);
+			}
+		}
 		
 		synchronized (this.bullets) {
 			for (Bullet bullet : this.bullets) {
@@ -203,7 +239,9 @@ public class Universe {
 	private void renderStatistics(Graphics g) {
 		int currentLevel = this.levelController.getCurrentLevel();
 		g.setColor(Color.WHITE);
-		g.drawString("Level: " + currentLevel, 10, 20);
+		g.setFont(new Font( "SansSerif", Font.PLAIN, 20 ));
+		g.drawString("Level: " + currentLevel, 20, 30);
+		g.drawString("Score: " + this.score, 20, 60);
 	}
 
 }

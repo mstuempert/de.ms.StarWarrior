@@ -1,8 +1,9 @@
 package de.ms.sw;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 
 public class Enemy extends Gizmo {
 	
@@ -21,6 +22,10 @@ public class Enemy extends Gizmo {
 				&& this.position.y() < this.universe.getSize().height;
 	}
 	
+	public int getScore() {
+		return 100;
+	}
+	
 	@Override
 	public void move(long millis) {
 		super.move(millis);
@@ -35,10 +40,16 @@ public class Enemy extends Gizmo {
 
 	@Override
 	public void render(Graphics g) {
-		g.setColor(Color.WHITE);
-		g.drawLine((int)this.position.x(), (int)this.position.y()+10, (int)this.position.x()-10, (int)this.position.y()-10);
-		g.drawLine((int)this.position.x()-10, (int)this.position.y()-10, (int)this.position.x()+10, (int)this.position.y()-10);
-		g.drawLine((int)this.position.x()+10, (int)this.position.y()-10, (int)this.position.x(), (int)this.position.y()+10);
+		BufferedImage image = null;
+		try {
+			image = ImageRegistry.getInstance().getImage(ImageRegistry.IMG_ENEMY);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		if (image != null) {
+			g.drawImage(image, (int) position.x()-16, (int) position.y()-16, null);
+		}
+
 	}
 
 	private void fireBullet() {
@@ -48,7 +59,7 @@ public class Enemy extends Gizmo {
 	
 	@Override
 	public Rectangle getBoundingBox() {
-		return new Rectangle((int)this.position.x()-10, (int)this.position.y()-10, 20, 20);
+		return new Rectangle((int)this.position.x()-16, (int)this.position.y()-16, 32, 32);
 	}
 
 }

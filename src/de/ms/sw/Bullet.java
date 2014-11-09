@@ -21,12 +21,12 @@ public class Bullet extends Gizmo {
 	@Override
 	public void render(Graphics g) {
 		g.setColor(this.enemy ? Color.RED : Color.BLUE);
-		g.fillRect((int)this.position.x()-1, (int)this.position.y()-3, 3, 6);
+		g.fillRect((int)this.position.x()-1, (int)this.position.y()-3, 2, 10);
 	}
 	
 	@Override
 	public Rectangle getBoundingBox() {
-		return new Rectangle((int)this.position.x()-1, (int)this.position.y()-3, 3, 6);
+		return new Rectangle((int)this.position.x()-1, (int)this.position.y()-3, 2, 10);
 	}
 
 }

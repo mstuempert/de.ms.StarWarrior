@@ -27,6 +27,11 @@ public abstract class Gizmo {
 	
 	public void move(long millis) {
 		this.position.add(this.velocity.product((float)millis/1000f));
+		if (this.position.x() < 0) {
+			this.position.setX(this.universe.getSize().width+this.position.x());
+		} else if (this.position.x() > this.universe.getSize().width) {
+			this.position.setX(this.position.x()-this.universe.getSize().width);
+		}
 	}
 
 	public abstract void render(Graphics g);

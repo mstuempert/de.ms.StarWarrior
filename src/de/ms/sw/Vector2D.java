@@ -1,5 +1,7 @@
 package de.ms.sw;
 
+import java.awt.Point;
+
 public class Vector2D {
 	
 	private float x;
@@ -29,6 +31,10 @@ public class Vector2D {
 	
 	public Vector2D product(float a) {
 		return new Vector2D(this.x * a, this.y * a);
+	}
+	
+	public Point toPoint() {
+		return new Point((int) this.x, (int) this.y);
 	}
 	
 	public void setX(float x) {
